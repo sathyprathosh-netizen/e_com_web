@@ -1,0 +1,832 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Product Detail – Vogue Vista</title>
+<meta name="description" content="View full product details, choose your size and add to cart at Vogue Vista – Your Fashion, Our Passion!">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  :root{
+    --blue:#1e40af;--blue-light:#60a5fa;--blue-dark:#1d4ed8;
+    --gold:#D4A017;--dark:#0f172a;--text:#2d3748;--text-light:#718096;
+    --border:#e2e8f0;--bg-light:#f8fafc;--white:#fff;--star:#f5a623;
+    --radius-lg:16px;--radius-md:12px;--radius-sm:8px;
+    --shadow-sm:0 2px 6px rgba(0,0,0,0.04);
+    --shadow-md:0 8px 24px rgba(0,0,0,0.07);
+    --shadow-lg:0 16px 36px rgba(30,64,175,0.12);
+    --transition:all 0.3s cubic-bezier(0.25,0.46,0.45,0.94);
+  }
+  body{font-family:'Poppins',sans-serif;color:var(--text);background:#fcfcfc;overflow-x:hidden}
+  a{text-decoration:none;color:inherit;transition:var(--transition)}
+  ul{list-style:none}
+  img{max-width:100%;display:block}
+
+  /* HEADER */
+  .sticky-header-container{position:sticky;top:0;z-index:1000;background:transparent;pointer-events:none}
+  header{background:rgba(255,255,255,0.97);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);pointer-events:auto;box-shadow:0 4px 20px rgba(0,0,0,0.04)}
+  .header-inner{display:flex;align-items:center;justify-content:space-between;padding:12px 40px;max-width:1400px;margin:0 auto;gap:24px}
+  .logo{display:flex;align-items:center;gap:10px;flex-shrink:0}
+  .logo-icon{width:40px;height:40px;background:linear-gradient(135deg,var(--blue),var(--blue-dark));border-radius:var(--radius-md);display:flex;align-items:center;justify-content:center;color:#fff;font-size:16px;font-weight:700}
+  .logo-text .brand{font-size:19px;font-weight:700;color:var(--dark)}
+  .logo-text .tagline{font-size:9px;color:var(--text-light);font-weight:500}
+  .header-search{flex:1;max-width:480px;display:flex;align-items:center;background:#f8fafc;border:1.5px solid var(--border);border-radius:30px;padding:2px;transition:var(--transition)}
+  .header-search:focus-within{border-color:var(--blue);background:#fff;box-shadow:0 0 0 4px rgba(30,64,175,0.08)}
+  .header-search input{flex:1;border:none;background:transparent;padding:9px 16px;font-size:13px;font-family:'Poppins',sans-serif;outline:none}
+  .header-search button{background:linear-gradient(135deg,var(--blue),var(--blue-dark));border:none;cursor:pointer;width:36px;height:36px;border-radius:50%;color:#fff;font-size:12px;display:flex;align-items:center;justify-content:center}
+  .header-actions{display:flex;align-items:center;gap:20px}
+  .header-actions a{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:10px;color:var(--text);font-weight:500;position:relative}
+  .header-actions a i{font-size:18px;color:var(--text-light);transition:var(--transition)}
+  .header-actions a:hover{color:var(--blue)}
+  .header-actions a:hover i{color:var(--blue);transform:translateY(-2px)}
+  .cart-count{position:absolute;top:-4px;right:-6px;background:var(--blue);color:#fff;font-size:9px;width:15px;height:15px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700}
+
+  /* NAV */
+  nav{background:rgba(255,255,255,0.98);backdrop-filter:blur(12px);max-width:1200px;width:calc(100% - 80px);margin:10px auto;border-radius:50px;box-shadow:0 8px 25px rgba(30,64,175,0.12);border:1px solid rgba(30,64,175,0.1);pointer-events:auto;overflow:hidden}
+  .nav-inner{display:flex;align-items:center;justify-content:space-evenly;flex-wrap:wrap;padding:0 16px;gap:2px}
+  .nav-inner a{color:var(--blue-dark);font-size:12px;font-weight:600;padding:9px 16px;display:block;transition:var(--transition);white-space:nowrap;border-radius:30px;margin:3px 2px}
+  .nav-inner a:hover,.nav-inner a.active{background:var(--blue);color:#fff}
+  .nav-inner a.sale{color:#e11d48;font-weight:700}
+
+  /* BREADCRUMB */
+  .breadcrumb{padding:16px 40px;max-width:1400px;margin:0 auto;display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text-light)}
+  .breadcrumb a{color:var(--text-light);transition:var(--transition)}
+  .breadcrumb a:hover{color:var(--blue)}
+  .breadcrumb span{color:var(--dark);font-weight:500}
+  .breadcrumb i{font-size:10px}
+
+  /* PRODUCT DETAIL SECTION */
+  .product-detail{max-width:1400px;margin:0 auto;padding:0 40px 60px;display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:start}
+
+  /* IMAGE GALLERY */
+  .gallery-wrap{position:sticky;top:120px}
+  .main-img-wrap{position:relative;border-radius:20px;overflow:hidden;aspect-ratio:3/4;background:#f7f8fc;box-shadow:var(--shadow-lg)}
+  .main-img-wrap img{width:100%;height:100%;object-fit:cover;transition:transform 0.5s ease}
+  .main-img-wrap:hover img{transform:scale(1.04)}
+  .img-badge{position:absolute;top:16px;left:16px;background:linear-gradient(135deg,var(--blue),var(--blue-dark));color:#fff;font-size:10px;font-weight:700;padding:5px 12px;border-radius:20px;text-transform:uppercase;letter-spacing:0.5px}
+  .img-badge.sale-badge{background:linear-gradient(135deg,#e11d48,#be123c)}
+  .img-badge.gold-badge{background:linear-gradient(135deg,#D4A017,#b8860b)}
+  .img-badge.green-badge{background:linear-gradient(135deg,#059669,#047857)}
+  .wishlist-btn-lg{position:absolute;top:16px;right:16px;width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,0.95);backdrop-filter:blur(8px);border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;color:var(--text-light);box-shadow:0 4px 12px rgba(0,0,0,0.1);transition:var(--transition)}
+  .wishlist-btn-lg:hover{color:#e11d48;transform:scale(1.1)}
+  .wishlist-btn-lg.active{color:#e11d48}
+  .thumbs-row{display:flex;gap:10px;margin-top:14px}
+  .thumb{width:70px;height:85px;border-radius:10px;overflow:hidden;cursor:pointer;border:2px solid transparent;transition:var(--transition);flex-shrink:0}
+  .thumb img{width:100%;height:100%;object-fit:cover}
+  .thumb.active,.thumb:hover{border-color:var(--blue);transform:translateY(-2px)}
+
+  /* PRODUCT INFO */
+  .product-info-panel{padding-top:8px}
+  .prod-brand-tag{font-size:11px;color:var(--blue);font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px}
+  .prod-title{font-size:28px;font-weight:800;color:var(--dark);line-height:1.2;margin-bottom:14px}
+  .prod-rating{display:flex;align-items:center;gap:10px;margin-bottom:16px}
+  .stars{color:var(--star);font-size:14px;letter-spacing:1px}
+  .rating-count{font-size:12px;color:var(--text-light)}
+  .rating-bar{width:1px;height:14px;background:var(--border)}
+
+  .prod-price-row{display:flex;align-items:center;gap:14px;margin-bottom:20px;flex-wrap:wrap}
+  .prod-price-now{font-size:32px;font-weight:800;color:var(--dark)}
+  .prod-price-was{font-size:18px;color:var(--text-light);text-decoration:line-through}
+  .prod-price-off{background:#dcfce7;color:#15803d;font-size:13px;font-weight:700;padding:4px 10px;border-radius:20px}
+
+  .prod-desc{font-size:13px;color:var(--text-light);line-height:1.8;margin-bottom:24px;border-top:1px solid var(--border);padding-top:20px}
+
+  /* SIZE SELECTOR */
+  .size-section{margin-bottom:24px}
+  .size-label{font-size:12px;font-weight:700;color:var(--dark);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between}
+  .size-guide-link{font-size:11px;color:var(--blue);font-weight:600;cursor:pointer;text-decoration:underline}
+  .sizes-row{display:flex;gap:10px;flex-wrap:wrap}
+  .size-btn{width:48px;height:48px;border-radius:50%;border:2px solid var(--border);background:#fff;font-size:12px;font-weight:600;color:var(--text);cursor:pointer;transition:var(--transition);display:flex;align-items:center;justify-content:center;font-family:'Poppins',sans-serif}
+  .size-btn:hover{border-color:var(--blue);color:var(--blue)}
+  .size-btn.active{background:var(--blue);border-color:var(--blue);color:#fff;box-shadow:0 4px 12px rgba(30,64,175,0.25)}
+  .size-btn.unavailable{opacity:0.35;cursor:not-allowed;text-decoration:line-through}
+
+  /* COLOR SELECTOR */
+  .color-section{margin-bottom:24px}
+  .color-label{font-size:12px;font-weight:700;color:var(--dark);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:12px}
+  .colors-row{display:flex;gap:10px;flex-wrap:wrap}
+  .color-swatch{width:36px;height:36px;border-radius:50%;cursor:pointer;border:3px solid transparent;transition:var(--transition);position:relative}
+  .color-swatch:hover,.color-swatch.active{border-color:var(--dark);transform:scale(1.1)}
+  .color-swatch::after{content:'';position:absolute;inset:-4px;border-radius:50%;border:2px solid transparent;transition:var(--transition)}
+  .color-swatch.active::after{border-color:var(--blue)}
+
+  /* QUANTITY */
+  .qty-section{margin-bottom:28px}
+  .qty-label{font-size:12px;font-weight:700;color:var(--dark);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:12px}
+  .qty-control{display:flex;align-items:center;gap:0;border:2px solid var(--border);border-radius:50px;width:fit-content;overflow:hidden}
+  .qty-minus,.qty-plus{width:42px;height:42px;border:none;background:#fff;font-size:18px;cursor:pointer;color:var(--text);transition:var(--transition);display:flex;align-items:center;justify-content:center;font-family:'Poppins',sans-serif}
+  .qty-minus:hover,.qty-plus:hover{background:var(--blue);color:#fff}
+  .qty-num{width:50px;text-align:center;border:none;font-size:15px;font-weight:700;color:var(--dark);font-family:'Poppins',sans-serif;outline:none;background:#fff}
+
+  /* CTA BUTTONS */
+  .cta-row{display:flex;gap:14px;margin-bottom:28px}
+  .btn-cart-main{flex:1;background:linear-gradient(135deg,var(--blue),var(--blue-dark));color:#fff;border:none;padding:16px 24px;border-radius:50px;font-size:14px;font-weight:700;cursor:pointer;transition:var(--transition);display:flex;align-items:center;justify-content:center;gap:10px;font-family:'Poppins',sans-serif;letter-spacing:0.3px}
+  .btn-cart-main:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(30,64,175,0.35)}
+  .btn-buy-main{flex:1;background:#0f172a;color:#fff;border:none;padding:16px 24px;border-radius:50px;font-size:14px;font-weight:700;cursor:pointer;transition:var(--transition);display:flex;align-items:center;justify-content:center;gap:10px;font-family:'Poppins',sans-serif}
+  .btn-buy-main:hover{background:#1e293b;transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,0.2)}
+  .btn-wishlist-main{width:52px;height:52px;border-radius:50%;border:2px solid var(--border);background:#fff;font-size:18px;color:var(--text-light);cursor:pointer;transition:var(--transition);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .btn-wishlist-main:hover,.btn-wishlist-main.active{border-color:#e11d48;color:#e11d48;background:#fff5f5}
+
+  /* DELIVERY INFO */
+  .delivery-info{background:var(--bg-light);border-radius:var(--radius-md);padding:18px 20px;margin-bottom:24px}
+  .delivery-row{display:flex;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid var(--border)}
+  .delivery-row:last-child{border-bottom:none}
+  .delivery-row i{font-size:16px;color:var(--blue);width:20px;flex-shrink:0}
+  .delivery-text strong{display:block;font-size:12px;font-weight:700;color:var(--dark)}
+  .delivery-text span{font-size:11px;color:var(--text-light)}
+
+  /* DETAILS ACCORDION */
+  .accordion{border:1px solid var(--border);border-radius:var(--radius-md);overflow:hidden;margin-bottom:10px}
+  .accordion-head{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;cursor:pointer;background:#fff;transition:var(--transition)}
+  .accordion-head:hover{background:var(--bg-light)}
+  .accordion-head h4{font-size:13px;font-weight:700;color:var(--dark)}
+  .accordion-head i{font-size:11px;color:var(--text-light);transition:transform 0.3s}
+  .accordion-body{padding:0 20px;max-height:0;overflow:hidden;transition:max-height 0.3s ease,padding 0.3s}
+  .accordion-body.open{max-height:400px;padding:16px 20px}
+  .accordion-head.open i{transform:rotate(180deg)}
+  .accordion-body p,.accordion-body li{font-size:13px;color:var(--text-light);line-height:1.8}
+  .accordion-body ul li{display:flex;align-items:flex-start;gap:8px;margin-bottom:6px}
+  .accordion-body ul li::before{content:'•';color:var(--blue);font-weight:700;flex-shrink:0}
+
+  /* SIMILAR PRODUCTS */
+  .similar-section{background:var(--bg-light);padding:60px 0;border-top:1px solid var(--border)}
+  .similar-inner{max-width:1400px;margin:0 auto;padding:0 40px}
+  .similar-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:22px;margin-top:28px}
+  .product-card{background:#fff;border-radius:var(--radius-lg);overflow:hidden;cursor:pointer;transition:var(--transition);box-shadow:var(--shadow-sm)}
+  .product-card:hover{box-shadow:var(--shadow-lg);transform:translateY(-6px)}
+  .product-img-wrap{position:relative;aspect-ratio:3/4;overflow:hidden;background:#f7f8fc}
+  .product-img-wrap img{width:100%;height:100%;object-fit:cover;transition:transform 0.6s ease}
+  .product-card:hover .product-img-wrap img{transform:scale(1.07)}
+  .product-badge{position:absolute;top:10px;left:10px;background:linear-gradient(135deg,var(--blue),var(--blue-dark));color:#fff;font-size:9px;font-weight:700;padding:4px 9px;border-radius:20px;text-transform:uppercase}
+  .product-wishlist{position:absolute;top:10px;right:10px;width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,0.92);display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--text-light);cursor:pointer;transition:var(--transition)}
+  .product-wishlist:hover{color:#e11d48;transform:scale(1.1)}
+  .product-info{padding:14px 16px 16px}
+  .product-brand{font-size:9px;color:var(--text-light);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;font-weight:600}
+  .product-name{font-size:13px;font-weight:600;color:var(--dark);margin-bottom:8px;line-height:1.4;min-height:36px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  .product-price{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .price-now{font-size:15px;font-weight:700;color:var(--dark)}
+  .price-was{font-size:12px;color:var(--text-light);text-decoration:line-through}
+  .price-off{font-size:11px;color:#059669;font-weight:700}
+  .btn-add{width:100%;margin-top:10px;background:linear-gradient(135deg,var(--blue),var(--blue-dark));color:#fff;border:none;padding:10px;border-radius:var(--radius-sm);font-size:12px;font-weight:600;cursor:pointer;transition:var(--transition);display:flex;align-items:center;justify-content:center;gap:6px;font-family:'Poppins',sans-serif}
+  .btn-add:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(30,64,175,0.3)}
+
+  /* REVIEWS */
+  .reviews-section{background:#fff;padding:60px 0;border-top:1px solid var(--border)}
+  .reviews-inner{max-width:1400px;margin:0 auto;padding:0 40px}
+  .reviews-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:28px}
+  .review-card{background:var(--bg-light);border-radius:var(--radius-lg);padding:24px;box-shadow:var(--shadow-sm);transition:var(--transition)}
+  .review-card:hover{transform:translateY(-3px)}
+  .review-stars{color:var(--star);font-size:12px;margin-bottom:10px}
+  .review-text{font-size:13px;color:var(--text);line-height:1.7;margin-bottom:14px;font-style:italic}
+  .review-author{display:flex;align-items:center;gap:10px}
+  .review-avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--gold));display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;font-weight:700}
+  .review-name{font-size:13px;font-weight:600;color:var(--dark)}
+  .review-location{font-size:11px;color:var(--text-light)}
+
+  /* TRUST */
+  .trust-section{background:#fff;padding:45px 0;border-top:1px solid var(--border)}
+  .trust-inner{max-width:1400px;margin:0 auto;padding:0 40px}
+  .trust-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:20px}
+  .trust-item{display:flex;flex-direction:column;align-items:center;text-align:center;gap:8px}
+  .trust-icon{font-size:26px;color:var(--blue)}
+  .trust-label{font-size:12px;font-weight:700;color:var(--dark);text-transform:uppercase}
+  .trust-desc{font-size:11px;color:var(--text-light);line-height:1.5}
+
+  /* FOOTER */
+  footer{background:#111;color:rgba(255,255,255,0.7);padding:55px 0 0}
+  .footer-inner{max-width:1400px;margin:0 auto;padding:0 40px}
+  .footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1.5fr;gap:40px;padding-bottom:45px}
+  .footer-col h4{color:#fff;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:18px}
+  .footer-col p{font-size:12px;line-height:1.75;color:rgba(255,255,255,0.5)}
+  .footer-col ul li{margin-bottom:9px}
+  .footer-col ul li a{font-size:12px;color:rgba(255,255,255,0.5);transition:var(--transition)}
+  .footer-col ul li a:hover{color:var(--blue-light)}
+  .footer-social{display:flex;gap:10px;margin-top:16px}
+  .footer-social a{width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,0.06);display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,0.6);font-size:13px;transition:var(--transition)}
+  .footer-social a:hover{background:var(--blue);color:#fff}
+  .footer-newsletter{display:flex;margin-top:14px}
+  .footer-newsletter input{flex:1;padding:10px 14px;border:none;background:rgba(255,255,255,0.08);color:#fff;font-size:12px;outline:none;border-radius:8px 0 0 8px;font-family:'Poppins',sans-serif}
+  .footer-newsletter button{background:var(--blue);color:#fff;border:none;padding:10px 18px;cursor:pointer;font-size:12px;font-weight:600;border-radius:0 8px 8px 0;font-family:'Poppins',sans-serif}
+  .pay-badges{display:flex;gap:6px;margin-top:12px;flex-wrap:wrap}
+  .pay-badge{background:rgba(255,255,255,0.1);border-radius:4px;padding:3px 9px;font-size:10px;color:rgba(255,255,255,0.7);font-weight:600}
+  .footer-bottom{border-top:1px solid rgba(255,255,255,0.06);padding:16px 40px;font-size:11px;color:rgba(255,255,255,0.35);text-align:center}
+  #scrollTop{position:fixed;bottom:26px;right:26px;width:40px;height:40px;background:var(--blue);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px;cursor:pointer;box-shadow:0 4px 14px rgba(30,64,175,0.4);opacity:0;pointer-events:none;transition:opacity 0.3s,transform 0.3s;z-index:200}
+  #scrollTop.visible{opacity:1;pointer-events:auto}
+  #scrollTop:hover{transform:translateY(-3px)}
+
+  /* ── RESPONSIVE ── */
+  @media(max-width:1100px){
+    .product-detail{grid-template-columns:1fr 1fr;gap:40px;padding:0 24px 60px}
+    .similar-grid{grid-template-columns:repeat(3,1fr)}
+  }
+  @media(max-width:900px){
+    .product-detail{grid-template-columns:1fr;gap:32px;padding:0 20px 40px}
+    .gallery-wrap{position:static}
+    .prod-title{font-size:22px}
+    .prod-price-now{font-size:26px}
+    .cta-row{flex-wrap:wrap}
+    .btn-cart-main,.btn-buy-main{flex:1 1 45%}
+    .similar-grid{grid-template-columns:repeat(2,1fr)}
+    .reviews-grid{grid-template-columns:1fr}
+    .trust-grid{grid-template-columns:repeat(3,1fr)}
+    .footer-grid{grid-template-columns:1fr 1fr}
+    .breadcrumb{padding:12px 20px}
+    nav{width:calc(100% - 40px)}
+    .header-inner{padding:10px 20px}
+  }
+  @media(max-width:600px){
+    .header-inner{padding:10px 16px;gap:12px}
+    .header-search{max-width:none;flex:1}
+    nav{display:none}
+    .breadcrumb{padding:10px 16px}
+    .product-detail{padding:0 16px 40px}
+    .prod-title{font-size:20px}
+    .prod-price-now{font-size:22px}
+    .sizes-row{gap:8px}
+    .size-btn{width:42px;height:42px;font-size:11px}
+    .cta-row{gap:10px}
+    .btn-cart-main,.btn-buy-main{font-size:13px;padding:14px 16px}
+    .similar-grid{grid-template-columns:repeat(2,1fr);gap:12px}
+    .similar-inner,.reviews-inner,.trust-inner,.footer-inner{padding:0 16px}
+    .trust-grid{grid-template-columns:1fr 1fr}
+    .footer-grid{grid-template-columns:1fr;gap:20px}
+    .thumbs-row{gap:8px}
+    .thumb{width:58px;height:72px}
+  }
+
+  @keyframes fadeInUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+  .fade-in{animation:fadeInUp 0.5s ease both}
+  @keyframes pulse-heart{0%{transform:scale(1)}50%{transform:scale(1.4)}100%{transform:scale(1)}}
+
+  /* Not-found state */
+  .not-found{text-align:center;padding:80px 40px;max-width:500px;margin:0 auto}
+  .not-found i{font-size:60px;color:var(--border);margin-bottom:20px}
+  .not-found h2{font-size:22px;font-weight:700;color:var(--dark);margin-bottom:10px}
+  .not-found p{font-size:13px;color:var(--text-light);margin-bottom:24px}
+  .btn-back{display:inline-flex;align-items:center;gap:8px;background:var(--blue);color:#fff;padding:12px 28px;border-radius:30px;font-size:13px;font-weight:600;transition:var(--transition)}
+  .btn-back:hover{background:var(--blue-dark);transform:translateY(-2px)}
+
+  /* Zoom overlay for main image */
+  .img-zoom-hint{position:absolute;bottom:12px;right:12px;background:rgba(0,0,0,0.55);color:#fff;font-size:10px;padding:4px 10px;border-radius:20px;pointer-events:none;opacity:0;transition:opacity 0.3s}
+  .main-img-wrap:hover .img-zoom-hint{opacity:1}
+</style>
+</head>
+<body>
+
+<!-- STICKY HEADER -->
+<div class="sticky-header-container">
+  <header>
+    <div class="header-inner">
+      <a href="index.html" class="logo">
+        <div class="logo-icon">VV</div>
+        <div class="logo-text">
+          <div class="brand">Vogue Vista</div>
+          <div class="tagline">Your Fashion, Our Passion!</div>
+        </div>
+      </a>
+      <div class="header-search">
+        <input type="text" placeholder="Search sarees, lehengas, gowns…">
+        <button><i class="fas fa-search"></i></button>
+      </div>
+      <div class="header-actions">
+        <a href="wishlist.html" style="position:relative;">
+          <i class="far fa-heart"></i>
+          <span class="wishlist-count" style="position:absolute;top:-5px;right:-8px;background:#e11d48;color:#fff;font-size:9px;width:16px;height:16px;border-radius:50%;display:none;align-items:center;justify-content:center;font-weight:700;">0</span>
+          Wishlist
+        </a>
+        <a href="cart.html" class="cart-badge">
+          <i class="fas fa-shopping-bag"></i>
+          <span class="cart-count" style="display:none;">0</span>
+          Cart
+        </a>
+      </div>
+    </div>
+  </header>
+  <nav>
+    <div class="nav-inner">
+      <a href="index.html">Home</a>
+      <a href="new-arrivals.html">New Arrivals</a>
+      <a href="wedding-collection.html">Wedding Collection</a>
+      <a href="sarees.html">Sarees</a>
+      <a href="lehengas.html">Lehengas</a>
+      <a href="salwar-suits.html">Salwar Suits</a>
+      <a href="gowns.html">Gowns</a>
+      <a href="ready-to-ship.html" class="sale">Ready To Ship 🔥</a>
+    </div>
+  </nav>
+</div>
+
+<!-- BREADCRUMB -->
+<div class="breadcrumb" id="breadcrumb">
+  <a href="index.html">Home</a>
+  <i class="fas fa-chevron-right"></i>
+  <span id="breadcrumb-category">Products</span>
+  <i class="fas fa-chevron-right"></i>
+  <span id="breadcrumb-name">Product Detail</span>
+</div>
+
+<!-- PRODUCT DETAIL -->
+<div class="product-detail fade-in" id="productDetail">
+  <!-- Dynamically filled by JS -->
+  <div class="not-found" id="notFoundState" style="display:none;grid-column:1/-1;">
+    <i class="fas fa-box-open"></i>
+    <h2>Product Not Found</h2>
+    <p>We couldn't find the product you're looking for. Browse our collections to find something you'll love.</p>
+    <a href="new-arrivals.html" class="btn-back"><i class="fas fa-arrow-left"></i> Browse Products</a>
+  </div>
+</div>
+
+<!-- SIMILAR PRODUCTS -->
+<section class="similar-section" id="similarSection" style="display:none;">
+  <div class="similar-inner">
+    <h2 class="section-title" style="font-size:24px;font-weight:700;color:var(--dark);">You May Also <span style="color:var(--blue);">Like</span></h2>
+    <p style="font-size:13px;color:var(--text-light);margin-top:4px;">Handpicked products similar to your selection</p>
+    <div class="similar-grid" id="similarGrid"></div>
+  </div>
+</section>
+
+<!-- REVIEWS -->
+<section class="reviews-section">
+  <div class="reviews-inner">
+    <h2 class="section-title" style="font-size:24px;font-weight:700;color:var(--dark);margin-bottom:6px;">Customer <span style="color:var(--blue);">Reviews</span></h2>
+    <p style="font-size:13px;color:var(--text-light);margin-bottom:28px;">4.9 ★ average — real reviews from verified buyers</p>
+    <div class="reviews-grid">
+      <div class="review-card">
+        <div class="review-stars">★★★★★</div>
+        <div class="review-text">"The fabric quality is absolutely stunning. Exactly as shown in the pictures — the colour, the weave, all perfect. Arrived within 4 days and beautifully packaged!"</div>
+        <div class="review-author"><div class="review-avatar">M</div><div><div class="review-name">Meera Iyer</div><div class="review-location">Hyderabad, Telangana</div></div></div>
+      </div>
+      <div class="review-card">
+        <div class="review-stars">★★★★★</div>
+        <div class="review-text">"Ordered for my daughter's wedding reception and she looked like a dream! The embroidery work is so intricate and detailed. Will order again from Vogue Vista!"</div>
+        <div class="review-author"><div class="review-avatar">L</div><div><div class="review-name">Lakshmi Suresh</div><div class="review-location">Coimbatore, Tamil Nadu</div></div></div>
+      </div>
+      <div class="review-card">
+        <div class="review-stars">★★★★☆</div>
+        <div class="review-text">"Fast delivery and beautiful packaging. The product is exactly as described. Would recommend sizing up if you're between sizes. Lovely piece overall!"</div>
+        <div class="review-author"><div class="review-avatar">P</div><div><div class="review-name">Priya Sharma</div><div class="review-location">Mumbai, Maharashtra</div></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TRUST -->
+<section class="trust-section">
+  <div class="trust-inner">
+    <div class="trust-grid">
+      <div class="trust-item"><div class="trust-icon"><i class="fas fa-medal"></i></div><div class="trust-label">Authentic Quality</div><div class="trust-desc">Handpicked fabrics & genuine craftsmanship</div></div>
+      <div class="trust-item"><div class="trust-icon"><i class="fas fa-truck-fast"></i></div><div class="trust-label">Express Delivery</div><div class="trust-desc">Fast shipping with real-time tracking</div></div>
+      <div class="trust-item"><div class="trust-icon"><i class="fas fa-rotate-left"></i></div><div class="trust-label">Easy Returns</div><div class="trust-desc">7-day hassle-free return policy</div></div>
+      <div class="trust-item"><div class="trust-icon"><i class="fas fa-lock"></i></div><div class="trust-label">Secure Payment</div><div class="trust-desc">SSL encrypted & 100% safe checkout</div></div>
+      <div class="trust-item"><div class="trust-icon"><i class="fas fa-headset"></i></div><div class="trust-label">24/7 Support</div><div class="trust-desc">Always here to help with your order</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-grid">
+      <div class="footer-col">
+        <h4>About Vogue Vista</h4>
+        <p>Your destination for premium ethnic wear. We blend heritage craftsmanship with modern silhouettes to bring you the finest Sarees, Lehengas, and Suits.</p>
+        <div class="footer-social">
+          <a href="#"><i class="fab fa-facebook-f"></i></a>
+          <a href="#"><i class="fab fa-instagram"></i></a>
+          <a href="#"><i class="fab fa-pinterest-p"></i></a>
+          <a href="#"><i class="fab fa-youtube"></i></a>
+        </div>
+        <div class="pay-badges"><span class="pay-badge">VISA</span><span class="pay-badge">MC</span><span class="pay-badge">UPI</span><span class="pay-badge">EMI</span><span class="pay-badge">COD</span></div>
+      </div>
+      <div class="footer-col">
+        <h4>Categories</h4>
+        <ul>
+          <li><a href="new-arrivals.html">New Arrivals</a></li>
+          <li><a href="wedding-collection.html">Wedding Collection</a></li>
+          <li><a href="sarees.html">Sarees</a></li>
+          <li><a href="lehengas.html">Lehengas</a></li>
+          <li><a href="gowns.html">Gowns</a></li>
+          <li><a href="ready-to-ship.html">Ready To Ship</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Support</h4>
+        <ul>
+          <li><a href="#">Track Order</a></li>
+          <li><a href="#">Returns & Exchange</a></li>
+          <li><a href="#">Size Guide</a></li>
+          <li><a href="#">Contact Us</a></li>
+          <li><a href="#">FAQs</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Stay Connected</h4>
+        <p style="margin-bottom:12px;">Get new drop alerts & exclusive offers.</p>
+        <div class="footer-newsletter">
+          <input type="email" placeholder="Your email address">
+          <button>Subscribe</button>
+        </div>
+        <p style="margin-top:14px;"><i class="fas fa-map-marker-alt" style="color:var(--blue-light);margin-right:6px;"></i>50, Greater Noida, UP – 201306</p>
+        <p style="margin-top:6px;"><i class="fas fa-envelope" style="color:var(--blue-light);margin-right:6px;"></i>support@voguevista.com</p>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">© 2025 Vogue Vista. All Rights Reserved.</div>
+</footer>
+
+<div id="scrollTop"><i class="fas fa-arrow-up"></i></div>
+
+<script src="store.js"></script>
+<script>
+// ── PRODUCT DETAIL PAGE LOGIC ──
+document.addEventListener('DOMContentLoaded', function() {
+  const params = new URLSearchParams(window.location.search);
+  const productId = params.get('id');
+
+  if (!productId) {
+    showNotFound();
+    return;
+  }
+
+  const products = getProducts();
+  const product = products.find(p => String(p.id) === String(productId));
+
+  if (!product) {
+    showNotFound();
+    return;
+  }
+
+  // Update page title and breadcrumb
+  document.title = product.name + ' – Vogue Vista';
+  document.getElementById('breadcrumb-name').textContent = product.name.length > 40 ? product.name.slice(0,40) + '...' : product.name;
+  
+  const catMap = {
+    'new-arrivals': 'New Arrivals',
+    'featured': 'Featured',
+    'sarees': 'Sarees',
+    'silk-sarees': 'Silk Sarees',
+    'lehengas': 'Lehengas',
+    'gowns': 'Gowns',
+    'kurtis': 'Kurtis',
+    'salwar-suits': 'Salwar Suits',
+    'wedding-collection': 'Wedding Collection',
+    'suits-dresses': 'Suits & Dresses',
+    'ready-to-ship': 'Ready To Ship'
+  };
+  const catName = catMap[product.category] || 'Products';
+  const catLink = product.category === 'new-arrivals' ? 'new-arrivals.html' : (product.category === 'featured' ? 'index.html' : product.category + '.html');
+  document.getElementById('breadcrumb-category').innerHTML = `<a href="${catLink}" style="color:var(--text-light);">${catName}</a>`;
+
+  // Calculate discount
+  let offPct = 0;
+  if (product.originalPrice && product.originalPrice > product.price) {
+    offPct = Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100);
+  }
+
+  // Product descriptions by category
+  const descMap = {
+    'sarees': 'This exquisite saree is crafted with premium quality fabric, showcasing intricate handwork and rich colours. Perfect for festive occasions, weddings and parties. The saree comes with a matching blouse piece.',
+    'silk-sarees': 'A masterpiece of weaving craftsmanship, this pure silk saree features intricate zari work and rich border. Ideal for weddings, receptions and grand festivities. Blouse piece included.',
+    'lehengas': 'This stunning lehenga choli set features rich embroidery and superior fabric quality. Perfect for weddings, mehndi ceremonies and festive celebrations. Comes as a complete 3-piece set.',
+    'gowns': 'An elegant floor-length gown crafted with premium fabric. Features intricate detailing and a flattering silhouette. Perfect for cocktail parties, receptions and evening events.',
+    'kurtis': 'A comfortable and stylish kurti crafted with soft, breathable fabric. Features beautiful prints or embroidery work. Perfect for daily wear, casual outings and office settings.',
+    'salwar-suits': 'A graceful salwar suit set crafted with premium fabric and delicate embroidery. Comes as a complete set with dupatta. Suitable for festive occasions, parties and casual outings.',
+    'wedding-collection': 'A stunning bridal ensemble crafted with the finest fabrics and intricate handwork. Every detail is meticulously crafted for your most special day. Includes all matching accessories.',
+    'new-arrivals': 'A fresh addition to our collection, this piece features premium quality fabric with beautiful contemporary design. Perfect for the modern Indian woman who loves to make a style statement.',
+    'featured': 'One of our most loved pieces, this outfit features premium fabric quality and beautiful craftsmanship. A versatile piece that can be styled for various occasions from casual to festive.'
+  };
+
+  const productDesc = descMap[product.category] || 'A premium quality ethnic outfit crafted with finest fabrics and superior craftsmanship. Perfect for making a lasting impression at any occasion.';
+
+  // Fabric details
+  const fabricDetails = [
+    'Premium quality fabric with rich texture',
+    'Vibrant, fade-resistant colour',
+    'Machine washable on gentle cycle',
+    'Blouse piece included (if applicable)',
+    'Dry cleaning recommended for best results'
+  ];
+
+  // Build product HTML
+  const detailContainer = document.getElementById('productDetail');
+  
+  const fallbackVal = window.generatePlaceholderSVG ? window.generatePlaceholderSVG(product.category, product.name) : FALLBACK_IMAGE;
+  const wishlistActive = isInWishlist(product.id);
+
+  detailContainer.innerHTML = `
+    <!-- GALLERY -->
+    <div class="gallery-wrap">
+      <div class="main-img-wrap" id="mainImgWrap">
+        <img src="${product.image || fallbackVal}" alt="${product.name}" id="mainImg" onerror="this.onerror=null;this.src=window.getFallbackImage(this);">
+        ${product.badge ? `<div class="img-badge ${getBadgeClass(product.badge)}">${product.badge}</div>` : ''}
+        <button class="wishlist-btn-lg ${wishlistActive ? 'active' : ''}" id="mainWishlistBtn" aria-label="Add to Wishlist">
+          <i class="${wishlistActive ? 'fas' : 'far'} fa-heart"></i>
+        </button>
+        <div class="img-zoom-hint"><i class="fas fa-search-plus"></i> Hover to zoom</div>
+      </div>
+      <div class="thumbs-row" id="thumbsRow">
+        <div class="thumb active" data-img="${product.image || fallbackVal}">
+          <img src="${product.image || fallbackVal}" alt="View 1" onerror="this.onerror=null;this.src=window.getFallbackImage(this);">
+        </div>
+        <div class="thumb" data-img="https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?auto=format&fit=crop&w=500&q=80">
+          <img src="https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?auto=format&fit=crop&w=500&q=80" alt="View 2" onerror="this.onerror=null;this.src=window.getFallbackImage(this);">
+        </div>
+        <div class="thumb" data-img="https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=500&q=80">
+          <img src="https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=500&q=80" alt="View 3" onerror="this.onerror=null;this.src=window.getFallbackImage(this);">
+        </div>
+        <div class="thumb" data-img="https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?auto=format&fit=crop&w=500&q=80">
+          <img src="https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?auto=format&fit=crop&w=500&q=80" alt="View 4" onerror="this.onerror=null;this.src=window.getFallbackImage(this);">
+        </div>
+      </div>
+    </div>
+
+    <!-- PRODUCT INFO -->
+    <div class="product-info-panel">
+      <div class="prod-brand-tag">${product.brand || 'Vogue Vista'}</div>
+      <h1 class="prod-title">${product.name}</h1>
+
+      <div class="prod-rating">
+        <div class="stars">★★★★★</div>
+        <span class="rating-count" style="font-size:12px;color:var(--text-light);">4.9</span>
+        <div class="rating-bar"></div>
+        <span style="font-size:12px;color:var(--text-light);">2,847 Reviews</span>
+        <div class="rating-bar"></div>
+        <span style="font-size:12px;color:#059669;font-weight:600;"><i class="fas fa-check-circle"></i> In Stock</span>
+      </div>
+
+      <div class="prod-price-row">
+        <span class="prod-price-now">₹${Number(product.price).toLocaleString('en-IN')}</span>
+        ${product.originalPrice ? `<span class="prod-price-was">₹${Number(product.originalPrice).toLocaleString('en-IN')}</span>` : ''}
+        ${offPct > 0 ? `<span class="prod-price-off">${offPct}% OFF</span>` : ''}
+      </div>
+
+      <p class="prod-desc">${productDesc}</p>
+
+      <!-- SIZE SELECTOR -->
+      <div class="size-section">
+        <div class="size-label">
+          Select Size
+          <span class="size-guide-link" onclick="alert('Size Guide: XS=32, S=34, M=36, L=38, XL=40, XXL=42')">Size Guide</span>
+        </div>
+        <div class="sizes-row" id="sizeSelector">
+          <button class="size-btn" data-size="XS">XS</button>
+          <button class="size-btn" data-size="S">S</button>
+          <button class="size-btn active" data-size="M">M</button>
+          <button class="size-btn" data-size="L">L</button>
+          <button class="size-btn" data-size="XL">XL</button>
+          <button class="size-btn" data-size="XXL">XXL</button>
+        </div>
+      </div>
+
+      <!-- COLOR SELECTOR -->
+      <div class="color-section">
+        <div class="color-label" id="colorLabel">Colour: <strong>Original</strong></div>
+        <div class="colors-row">
+          <div class="color-swatch active" style="background:#8B4513;" data-color="Brown" title="Brown"></div>
+          <div class="color-swatch" style="background:#DC143C;" data-color="Crimson Red" title="Crimson Red"></div>
+          <div class="color-swatch" style="background:#2F4F4F;" data-color="Dark Teal" title="Dark Teal"></div>
+          <div class="color-swatch" style="background:#D4A017;" data-color="Gold" title="Gold"></div>
+          <div class="color-swatch" style="background:#4B0082;" data-color="Indigo" title="Indigo"></div>
+        </div>
+      </div>
+
+      <!-- QUANTITY -->
+      <div class="qty-section">
+        <div class="qty-label">Quantity</div>
+        <div class="qty-control">
+          <button class="qty-minus" id="qtyMinus">−</button>
+          <input class="qty-num" type="text" value="1" id="qtyInput" readonly>
+          <button class="qty-plus" id="qtyPlus">+</button>
+        </div>
+      </div>
+
+      <!-- CTA BUTTONS -->
+      <div class="cta-row">
+        <button class="btn-cart-main" id="addToCartBtn">
+          <i class="fas fa-shopping-bag"></i> Add to Cart
+        </button>
+        <button class="btn-buy-main" id="buyNowBtn">
+          <i class="fas fa-bolt"></i> Buy Now
+        </button>
+        <button class="btn-wishlist-main ${wishlistActive ? 'active' : ''}" id="wishlistMainBtn" aria-label="Wishlist">
+          <i class="${wishlistActive ? 'fas' : 'far'} fa-heart"></i>
+        </button>
+      </div>
+
+      <!-- DELIVERY INFO -->
+      <div class="delivery-info">
+        <div class="delivery-row">
+          <i class="fas fa-truck-fast"></i>
+          <div class="delivery-text">
+            <strong>Free Delivery</strong>
+            <span>On orders above ₹999 — Expected in 3–5 business days</span>
+          </div>
+        </div>
+        <div class="delivery-row">
+          <i class="fas fa-rotate-left"></i>
+          <div class="delivery-text">
+            <strong>7-Day Easy Returns</strong>
+            <span>No questions asked return policy</span>
+          </div>
+        </div>
+        <div class="delivery-row">
+          <i class="fas fa-shield-halved"></i>
+          <div class="delivery-text">
+            <strong>100% Authentic</strong>
+            <span>Certified genuine product with quality guarantee</span>
+          </div>
+        </div>
+        <div class="delivery-row">
+          <i class="fas fa-headset"></i>
+          <div class="delivery-text">
+            <strong>24/7 Customer Support</strong>
+            <span>ggfashionstore09@gmail.com</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ACCORDIONS -->
+      <div class="accordion" id="acc1">
+        <div class="accordion-head open" onclick="toggleAccordion('acc1')">
+          <h4><i class="fas fa-list-ul" style="margin-right:8px;color:var(--blue);"></i>Product Details</h4>
+          <i class="fas fa-chevron-down" style="transform:rotate(180deg)"></i>
+        </div>
+        <div class="accordion-body open">
+          <ul>
+            <li>Brand: <strong>${product.brand || 'Vogue Vista'}</strong></li>
+            <li>Category: <strong>${catName}</strong></li>
+            <li>SKU: <strong>${product.id ? product.id.toString().slice(0,16).toUpperCase() : 'VV-' + Math.random().toString(36).slice(2,8).toUpperCase()}</strong></li>
+            <li>Available Sizes: XS, S, M, L, XL, XXL</li>
+            <li>Occasion: Festive, Party, Wedding, Casual</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="accordion" id="acc2">
+        <div class="accordion-head" onclick="toggleAccordion('acc2')">
+          <h4><i class="fas fa-tshirt" style="margin-right:8px;color:var(--blue);"></i>Fabric & Care</h4>
+          <i class="fas fa-chevron-down"></i>
+        </div>
+        <div class="accordion-body">
+          <ul>
+            ${fabricDetails.map(d => `<li>${d}</li>`).join('')}
+          </ul>
+        </div>
+      </div>
+
+      <div class="accordion" id="acc3">
+        <div class="accordion-head" onclick="toggleAccordion('acc3')">
+          <h4><i class="fas fa-shipping-fast" style="margin-right:8px;color:var(--blue);"></i>Shipping & Returns</h4>
+          <i class="fas fa-chevron-down"></i>
+        </div>
+        <div class="accordion-body">
+          <ul>
+            <li>Free shipping on orders above ₹999</li>
+            <li>Standard delivery: 3–5 business days</li>
+            <li>Express delivery available (2–3 days)</li>
+            <li>7-day hassle-free return window</li>
+            <li>Items must be unworn and in original packaging</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  `;
+
+  // ── THUMBNAIL SWITCHER ──
+  document.getElementById('thumbsRow').querySelectorAll('.thumb').forEach(thumb => {
+    thumb.addEventListener('click', function() {
+      document.querySelectorAll('.thumb').forEach(t => t.classList.remove('active'));
+      this.classList.add('active');
+      document.getElementById('mainImg').src = this.dataset.img;
+    });
+  });
+
+  // ── SIZE SELECTOR ──
+  let selectedSize = 'M';
+  document.getElementById('sizeSelector').querySelectorAll('.size-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+      document.querySelectorAll('.size-btn').forEach(b => b.classList.remove('active'));
+      this.classList.add('active');
+      selectedSize = this.dataset.size;
+    });
+  });
+
+  // ── COLOUR SELECTOR ──
+  document.querySelectorAll('.color-swatch').forEach(swatch => {
+    swatch.addEventListener('click', function() {
+      document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('active'));
+      this.classList.add('active');
+      document.getElementById('colorLabel').innerHTML = `Colour: <strong>${this.dataset.color}</strong>`;
+    });
+  });
+
+  // ── QUANTITY CONTROL ──
+  let qty = 1;
+  document.getElementById('qtyMinus').addEventListener('click', () => {
+    if (qty > 1) { qty--; document.getElementById('qtyInput').value = qty; }
+  });
+  document.getElementById('qtyPlus').addEventListener('click', () => {
+    if (qty < 10) { qty++; document.getElementById('qtyInput').value = qty; }
+  });
+
+  // ── ADD TO CART ──
+  document.getElementById('addToCartBtn').addEventListener('click', function() {
+    for (let i = 0; i < qty; i++) {
+      addToCart(product, selectedSize);
+    }
+    this.innerHTML = '<i class="fas fa-check"></i> Added to Cart!';
+    this.style.background = 'linear-gradient(135deg,#059669,#047857)';
+    setTimeout(() => {
+      this.innerHTML = '<i class="fas fa-shopping-bag"></i> Add to Cart';
+      this.style.background = '';
+    }, 2000);
+  });
+
+  // ── BUY NOW ──
+  document.getElementById('buyNowBtn').addEventListener('click', function() {
+    addToCart(product, selectedSize);
+    window.location.href = 'cart.html';
+  });
+
+  // ── WISHLIST TOGGLE ──
+  function updateWishlistBtns(isActive) {
+    ['mainWishlistBtn', 'wishlistMainBtn'].forEach(id => {
+      const btn = document.getElementById(id);
+      if (btn) {
+        if (isActive) {
+          btn.classList.add('active');
+          btn.querySelector('i').className = 'fas fa-heart';
+        } else {
+          btn.classList.remove('active');
+          btn.querySelector('i').className = 'far fa-heart';
+        }
+      }
+    });
+  }
+
+  ['mainWishlistBtn', 'wishlistMainBtn'].forEach(id => {
+    const btn = document.getElementById(id);
+    if (btn) {
+      btn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        if (isInWishlist(product.id)) {
+          removeFromWishlist(product.id);
+          updateWishlistBtns(false);
+          showToast('Removed from Wishlist');
+        } else {
+          addToWishlist(product);
+          updateWishlistBtns(true);
+          showToast('❤️ Saved! · <a href="wishlist.html" style="color:#fde68a;text-decoration:underline;">View Wishlist</a>');
+        }
+      });
+    }
+  });
+
+  // ── SIMILAR PRODUCTS ──
+  const similar = products.filter(p => p.id !== product.id && p.category === product.category).slice(0, 8);
+  if (similar.length > 0) {
+    document.getElementById('similarSection').style.display = 'block';
+    const grid = document.getElementById('similarGrid');
+    similar.forEach(p => {
+      grid.insertAdjacentHTML('beforeend', generateProductCardHTML(p));
+    });
+    initWishlistButtons();
+    initCartButtons();
+    initSizeSelectors();
+  }
+
+  updateCartCount();
+  updateWishlistCount();
+});
+
+function getBadgeClass(badge) {
+  if (!badge) return '';
+  const b = badge.toLowerCase();
+  if (b.includes('off') || b.includes('%') || b.includes('sale')) return 'sale-badge';
+  if (b.includes('silk') || b.includes('bridal') || b.includes('gold') || b.includes('patola') || b.includes('kanji') || b.includes('banarasi')) return 'gold-badge';
+  if (b.includes('new') || b.includes('cotton') || b.includes('linen') || b.includes('casual')) return 'green-badge';
+  return '';
+}
+
+function toggleAccordion(id) {
+  const el = document.getElementById(id);
+  const head = el.querySelector('.accordion-head');
+  const body = el.querySelector('.accordion-body');
+  const isOpen = body.classList.contains('open');
+  body.classList.toggle('open', !isOpen);
+  head.classList.toggle('open', !isOpen);
+}
+
+function showNotFound() {
+  document.getElementById('notFoundState').style.display = 'block';
+}
+
+// Scroll to top
+const scrollBtn = document.getElementById('scrollTop');
+window.addEventListener('scroll', () => scrollBtn.classList.toggle('visible', window.scrollY > 400));
+scrollBtn.addEventListener('click', () => window.scrollTo({top:0,behavior:'smooth'}));
+</script>
+</body>
+</html>
